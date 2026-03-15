@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>神の視点 — Civilization OS Calculator | CHOIIZUKA 2026</title>
+<meta name="description" content="AI軍事利用・フェイク情報・戦争強度・愛と平和の因子など6つの変数を操作し、文明の絶滅リスクと残存時間をリアルタイムで算出するシミュレーター。">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans JP',sans-serif;background:#0a0a0f;color:#e8e8ee;min-height:100vh;padding:0}
+.header{border-bottom:1px solid #1e1e2e;padding:1.5rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.header-left{}
+.header-title{font-size:20px;font-weight:600;letter-spacing:0.02em}
+.header-sub{font-size:13px;color:#888;margin-top:2px}
+.header-links{display:flex;gap:12px;flex-wrap:wrap}
+.header-links a{font-size:12px;color:#7c7cee;text-decoration:none;border:1px solid #2a2a4a;padding:4px 12px;border-radius:6px}
+.header-links a:hover{background:#1a1a2e}
+.main{max-width:960px;margin:0 auto;padding:2rem 1.5rem}
+.hero{text-align:center;margin-bottom:2.5rem}
+.hero h1{font-size:28px;font-weight:700;letter-spacing:0.03em;margin-bottom:8px}
+.hero h1 span{color:#7c7cee}
+.hero p{font-size:14px;color:#888;line-height:1.7;max-width:560px;margin:0 auto}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem}
+@media(max-width:700px){.grid{grid-template-columns:1fr}}
+.panel{background:#111118;border:1px solid #1e1e2e;border-radius:12px;padding:1.5rem}
+.panel-title{font-size:14px;font-weight:600;color:#aaa;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:1.2rem}
+.slider-row{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.slider-label{font-size:13px;color:#aaa;min-width:130px}
+.slider-row input[type=range]{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:#2a2a3e;outline:none}
+.slider-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:#7c7cee;cursor:pointer}
+.slider-val{font-size:13px;font-weight:600;min-width:30px;text-align:right;color:#e8e8ee}
+.metric-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+@media(max-width:500px){.metric-grid{grid-template-columns:1fr 1fr}}
+.metric-card{background:#0d0d14;border:1px solid #1e1e2e;border-radius:8px;padding:12px}
+.metric-label{font-size:11px;color:#666;margin-bottom:4px;letter-spacing:0.04em}
+.metric-val{font-size:22px;font-weight:700}
+.prog-bg{background:#1e1e2e;border-radius:3px;height:4px;margin-top:6px;overflow:hidden}
+.prog-fill{height:4px;border-radius:3px;transition:width 0.4s ease}
+.status-box{margin-top:1.5rem;border-radius:10px;padding:1.2rem 1.4rem;border:1px solid #1e1e2e;transition:all 0.3s}
+.status-badge{display:inline-block;font-size:11px;font-weight:700;letter-spacing:0.1em;padding:3px 10px;border-radius:4px;margin-bottom:8px}
+.status-text{font-size:13px;line-height:1.7;color:#bbb}
+.verdict{margin-top:1.5rem;background:#111118;border:1px solid #1e1e2e;border-radius:12px;padding:1.5rem;text-align:center}
+.verdict-label{font-size:12px;color:#666;letter-spacing:0.08em;margin-bottom:8px}
+.verdict-value{font-size:36px;font-weight:800;letter-spacing:0.02em}
+.verdict-sub{font-size:13px;color:#888;margin-top:4px}
+.refs{margin-top:2rem;background:#111118;border:1px solid #1e1e2e;border-radius:12px;padding:1.5rem}
+.refs-title{font-size:13px;color:#888;margin-bottom:12px}
+.refs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
+.ref-item{font-size:12px;color:#7c7cee;border:1px solid #2a2a4a;padding:6px 12px;border-radius:6px;text-decoration:none;display:block}
+.ref-item:hover{background:#1a1a2e}
+.footer{border-top:1px solid #1e1e2e;padding:1.5rem 2rem;text-align:center;font-size:12px;color:#555;margin-top:3rem}
+.footer a{color:#7c7cee;text-decoration:none}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="header-title">CHOIIZUKA 2026</div>
+    <div class="header-sub">Civilization OS Simulator — 神の視点</div>
+  </div>
+  <div class="header-links">
+    <a href="https://github.com/choiizuka/reports-index" target="_blank">GitHub Reports</a>
+    <a href="https://choappceo.wordpress.com/" target="_blank">Web JP</a>
+    <a href="https://choiizuka.wordpress.com/" target="_blank">Web EN</a>
+    <a href="https://amzn.to/4aYlXKL" target="_blank">書籍</a>
+  </div>
+</div>
+
+<div class="main">
+  <div class="hero">
+    <h1>神の視点<br><span>Civilization OS Simulator</span></h1>
+    <p>6つの変数を操作し、文明の絶滅リスク・エントロピー・残存時間をリアルタイムで算出する。これは予言ではない。不完全な文明OSが引き起こすスタックオーバーフローの計算結果だ。</p>
+  </div>
+
+  <div class="grid">
+    <div class="panel">
+      <div class="panel-title">入力変数 — Input Variables</div>
+
+      <div class="slider-row">
+        <span class="slider-label">AI軍事利用率</span>
+        <input type="range" min="0" max="100" value="60" step="1" id="ai_war">
+        <span class="slider-val" id="ai_war_v">60</span>
+      </div>
+      <div class="slider-row">
+        <span class="slider-label">フェイク情報率</span>
+        <input type="range" min="0" max="100" value="55" step="1" id="fake">
+        <span class="slider-val" id="fake_v">55</span>
+      </div>
+      <div class="slider-row">
+        <span class="slider-label">真実密度</span>
+        <input type="range" min="0" max="100" value="40" step="1" id="truth">
+        <span class="slider-val" id="truth_v">40</span>
+      </div>
+      <div class="slider-row">
+        <span class="slider-label">戦争強度</span>
+        <input type="range" min="0" max="100" value="50" step="1" id="war">
+        <span class="slider-val" id="war_v">50</span>
+      </div>
+      <div class="slider-row">
+        <span class="slider-label">人間の責任度</span>
+        <input type="range" min="0" max="100" value="30" step="1" id="resp">
+        <span class="slider-val" id="resp_v">30</span>
+      </div>
+      <div class="slider-row">
+        <span class="slider-label">愛と平和の因子</span>
+        <input type="range" min="0" max="100" value="25" step="1" id="love">
+        <span class="slider-val" id="love_v">25</span>
+      </div>
+
+      <div class="status-box" id="status_box">
+        <div class="status-badge" id="status_badge"></div>
+        <div class="status-text" id="status_text"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="panel">
+        <div class="panel-title">出力指標 — Output Metrics</div>
+        <div class="metric-grid">
+          <div class="metric-card">
+            <div class="metric-label">絶滅リスク</div>
+            <div class="metric-val" id="m_ext" style="color:#e24b4a">—</div>
+            <div class="prog-bg"><div class="prog-fill" id="p_ext" style="background:#e24b4a"></div></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">エントロピー</div>
+            <div class="metric-val" id="m_ent" style="color:#ef9f27">—</div>
+            <div class="prog-bg"><div class="prog-fill" id="p_ent" style="background:#ef9f27"></div></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">文明安定度</div>
+            <div class="metric-val" id="m_stab" style="color:#5dcaa5">—</div>
+            <div class="prog-bg"><div class="prog-fill" id="p_stab" style="background:#5dcaa5"></div></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">回復可能性</div>
+            <div class="metric-val" id="m_rec" style="color:#7c7cee">—</div>
+            <div class="prog-bg"><div class="prog-fill" id="p_rec" style="background:#7c7cee"></div></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">情報汚染度</div>
+            <div class="metric-val" id="m_info" style="color:#f0997b">—</div>
+            <div class="prog-bg"><div class="prog-fill" id="p_info" style="background:#f0997b"></div></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">推計残存時間</div>
+            <div class="metric-val" id="m_time" style="color:#85b7eb">—</div>
+            <div class="prog-bg"><div class="prog-fill" id="p_time" style="background:#85b7eb"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="verdict">
+        <div class="verdict-label">SYSTEM STATUS</div>
+        <div class="verdict-value" id="verdict_val">—</div>
+        <div class="verdict-sub" id="verdict_sub"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="refs">
+    <div class="refs-title">関連レポート・書籍 — Based on CHOIIZUKA Reports & Books</div>
+    <div class="refs-grid">
+      <a href="https://amzn.to/4ryj2Nz" target="_blank" class="ref-item">人類は必ず絶滅する 2026</a>
+      <a href="https://amzn.to/4sdzGU5" target="_blank" class="ref-item">侵略の21世紀 2026</a>
+      <a href="https://amzn.to/4aYlXKL" target="_blank" class="ref-item">イランAI戦争 2026</a>
+      <a href="https://github.com/choiizuka/Mathematical-Calculation-of-Humanity-s-Remaining-Lifespan" target="_blank" class="ref-item">人類残存時間の計算 (GitHub)</a>
+      <a href="https://github.com/choiizuka/Eden_Protocols-Anti-War_Scientific_Report" target="_blank" class="ref-item">Eden Protocols — 反戦科学 (GitHub)</a>
+      <a href="https://github.com/choiizuka/The-Probability-and-Toxicity-of-Fake-Information-on-SNS" target="_blank" class="ref-item">SNSフェイク情報の科学 (GitHub)</a>
+      <a href="https://github.com/choiizuka/reports-index" target="_blank" class="ref-item">全レポート一覧 (reports-index)</a>
+      <a href="https://choappceo.wordpress.com/2026/03/10/2026-manifesto-intelligence-ai-and-human-responsibility/" target="_blank" class="ref-item">2026年宣言 (全文)</a>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <p>Civilization OS Simulator v1.0 — CHOIIZUKA 2026 | <a href="https://github.com/choiizuka/reports-index">reports-index</a> | <a href="https://choappceo.wordpress.com/">Web JP</a> | <a href="https://choiizuka.wordpress.com/">Web EN</a></p>
+  <p style="margin-top:6px">このシミュレーターはCHOIIZUKAの科学的レポート群に基づく概念モデルです。数値はすべての変数が相互作用する簡略化されたモデルによる推計値です。</p>
+</div>
+
+<script>
+const params = ['ai_war','fake','truth','war','resp','love'];
+params.forEach(id=>{
+  document.getElementById(id).addEventListener('input',()=>{
+    document.getElementById(id+'_v').textContent = document.getElementById(id).value;
+    calc();
+  });
+});
+
+function calc(){
+  const ai = +document.getElementById('ai_war').value;
+  const fk = +document.getElementById('fake').value;
+  const tr = +document.getElementById('truth').value;
+  const wr = +document.getElementById('war').value;
+  const rs = +document.getElementById('resp').value;
+  const lv = +document.getElementById('love').value;
+
+  const entropy = Math.round((ai*0.3 + fk*0.35 + wr*0.25 - tr*0.1) * 0.9);
+  const neg = Math.round((lv*0.4 + rs*0.35 + tr*0.25) * 0.8);
+  const stability = Math.max(0, Math.min(100, Math.round(neg - entropy*0.6 + 30)));
+  const extinction = Math.max(0, Math.min(100, Math.round(entropy*0.7 - neg*0.5 + 20)));
+  const recovery = Math.max(0, Math.min(100, Math.round(neg*0.6 - entropy*0.3 + 20)));
+  const pollution = Math.max(0, Math.min(100, Math.round(fk*0.5 + ai*0.2 - tr*0.3)));
+  const raw = (100 - extinction)*2.5 - entropy*0.3 + neg*0.5;
+  let years;
+  if(raw < 5) years = Math.max(1,Math.round(raw))+'年';
+  else if(raw < 80) years = Math.round(raw)+'年';
+  else if(raw < 250) years = Math.round(raw/10)*10+'年';
+  else years = '300年+';
+  const timeBar = Math.min(100, Math.round(Math.max(0,raw)/3));
+
+  document.getElementById('m_ext').textContent = extinction+'%';
+  document.getElementById('m_ent').textContent = Math.min(100,entropy)+'%';
+  document.getElementById('m_stab').textContent = stability+'%';
+  document.getElementById('m_rec').textContent = recovery+'%';
+  document.getElementById('m_info').textContent = pollution+'%';
+  document.getElementById('m_time').textContent = years;
+
+  document.getElementById('p_ext').style.width = extinction+'%';
+  document.getElementById('p_ent').style.width = Math.min(100,entropy)+'%';
+  document.getElementById('p_stab').style.width = stability+'%';
+  document.getElementById('p_rec').style.width = recovery+'%';
+  document.getElementById('p_info').style.width = pollution+'%';
+  document.getElementById('p_time').style.width = timeBar+'%';
+
+  const box = document.getElementById('status_box');
+  const badge = document.getElementById('status_badge');
+  const text = document.getElementById('status_text');
+  const vv = document.getElementById('verdict_val');
+  const vs = document.getElementById('verdict_sub');
+
+  if(extinction >= 75){
+    box.style.background='rgba(162,45,45,0.15)'; box.style.borderColor='#7b1f1f';
+    badge.style.background='#7b1f1f'; badge.style.color='#f09595'; badge.textContent='COLLAPSE';
+    text.textContent='エントロピーが臨界値を超えた。愛と平和の因子および人間の責任度を大幅に上昇させない限り、システム全損は不可避。2026年宣言が警告した状態がすでに現実化している。';
+    vv.textContent='COLLAPSE'; vv.style.color='#e24b4a';
+    vs.textContent='文明崩壊臨界 — システム全損まで時間がない';
+  } else if(extinction >= 50){
+    box.style.background='rgba(186,117,23,0.12)'; box.style.borderColor='#633806';
+    badge.style.background='#633806'; badge.style.color='#fac775'; badge.textContent='CRITICAL';
+    text.textContent='文明OSに深刻なバグが累積している。フェイク情報率とAI軍事利用の低下、または真実密度と責任度の向上が急務。イランAI戦争はこのフェーズの実例だ。';
+    vv.textContent='CRITICAL'; vv.style.color='#ef9f27';
+    vs.textContent='危機的状態 — 介入しなければ崩壊フェーズへ移行する';
+  } else if(stability >= 55){
+    box.style.background='rgba(15,110,86,0.12)'; box.style.borderColor='#085041';
+    badge.style.background='#085041'; badge.style.color='#9fe1cb'; badge.textContent='STABLE';
+    text.textContent='ネゲントロピー（愛・平和・真実・責任）がエントロピーを上回っている。この状態を維持し強化することで文明の持続が可能になる。2026年宣言が目指すシステム状態。';
+    vv.textContent='STABLE'; vv.style.color='#5dcaa5';
+    vs.textContent='安定稼働中 — ネゲントロピーがエントロピーを制御している';
+  } else {
+    box.style.background='rgba(83,74,183,0.1)'; box.style.borderColor='#3c3489';
+    badge.style.background='#3c3489'; badge.style.color='#afa9ec'; badge.textContent='UNSTABLE';
+    text.textContent='崩壊と安定の境界線上にある。わずかな変数の変化で状態が急変する可能性がある。愛と平和の因子を+10するだけで状態が一段階改善される可能性がある。';
+    vv.textContent='UNSTABLE'; vv.style.color='#7c7cee';
+    vs.textContent='不安定域 — 崩壊と安定の境界線上にある';
+  }
+}
+
+calc();
+</script>
+</body>
+</html>
