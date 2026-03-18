@@ -1,3 +1,5 @@
+[← Back to Reports|レポート一覧に戻る](https://github.com/choiizuka/reports-index)
+
 # 神の視点 — Civilization OS Calculator
 
 **God's View: Civilization OS Calculator**
